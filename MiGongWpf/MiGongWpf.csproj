@@ -55,6 +55,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Commands\DelegateCommand.cs" />
+    <Compile Include="Converters\RefreshMGMultiValueConverter.cs" />
+    <Compile Include="Converters\StringConverter.cs" />
+    <Compile Include="Converters\StringMultiValueConverter.cs" />
     <Compile Include="CustomShape\MyLine.cs" />
     <Compile Include="ViewModel\MainWindowView.cs" />
     <Compile Include="WavefrontObjLoader.cs" />

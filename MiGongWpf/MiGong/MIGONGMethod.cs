@@ -42,8 +42,6 @@ namespace MiGongWpf.MiGong
         private Vector vectorY = new Vector(0, 1);
         public Dictionary<Tuple<int, int>, MIGONGModel> AllCols { private set; get; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public MIGONGMethod(int rowCont, int columnCount, int colWidth)
         {
             this.rowCont = rowCont;
@@ -51,8 +49,6 @@ namespace MiGongWpf.MiGong
             this.colWidth = colWidth;
             AllCols = new Dictionary<Tuple<int, int>, MIGONGModel>();
         }
-
-
 
         /// <summary>
         /// 得到迷宫最终线段

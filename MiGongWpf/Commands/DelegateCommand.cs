@@ -10,20 +10,15 @@ namespace MiGongWpf.Commands
     public class DelegateCommand :ICommand
     {
         public event EventHandler CanExecuteChanged;
-
-        public bool CanExecute(object parameter)
+        private Action<object> _executeAction { set; get; }
+        public DelegateCommand(Action<object> execute)
         {
-            if (CanExecuteFunc == null) return true;
-            return this.CanExecuteFunc(parameter);
+            _executeAction = execute;
         }
 
-        public void Execute(object parameter)
-        {
-            if (ExecuteAction == null) return;
-            ExecuteAction(parameter);
-        }
+        public bool CanExecute(object parameter) => true;
 
-        public Action<object> ExecuteAction { set; get; }
-        public Func<object, bool> CanExecuteFunc { set; get; }
+        public void Execute(object parameter) => _executeAction(parameter);
+
     }
 }

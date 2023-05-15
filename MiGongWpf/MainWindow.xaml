@@ -6,37 +6,116 @@
         xmlns:local="clr-namespace:MiGongWpf"
         xmlns:view="clr-namespace:MiGongWpf.ViewModel"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:converter="clr-namespace:MiGongWpf.Converters"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="700">
+        Title="MainWindow" Height="450" Width="900">
+    <Window.Resources>
+        <converter:RefreshMGMultiValueConverter x:Key="RefreshMGParameter"/>
+        <converter:StringMultiValueConverter x:Key="LabelShowToString"/>
+    </Window.Resources>
     <Window.DataContext>
-        <view:MainWindowView/>
+        <view:MainWindowView />
     </Window.DataContext>
     <DockPanel>
         <DockPanel DockPanel.Dock="Top">
             <StackPanel Orientation="Horizontal">
-                <StackPanel Orientation="Vertical">
-                    <Slider Width="40" Minimum="4" Maximum="20" Value="15" x:Name="colWidthCount"></Slider>
-                    <Slider Width="40" Minimum="4" Maximum="20" Value="15" x:Name="colHeigthCount"></Slider>
-                    <Slider Width="40" Minimum="4" Maximum="20" Value="15" x:Name="colLength"></Slider>
+                <StackPanel Orientation="Horizontal" Margin="0 0 20 0">
+                    <Label>行数：</Label>
+                    <Slider Height="20" Width="40" Minimum="4" Maximum="20" x:Name="colWidthCount" LargeChange="1" IsSnapToTickEnabled="True"></Slider>
+                    <Label>列数：</Label>
+                    <Slider Height="20" Width="40" Minimum="4" Maximum="20" x:Name="colHeigthCount" LargeChange="1" IsSnapToTickEnabled="True"></Slider>
+                    <Label>格子长度：</Label>
+                    <Slider Height="20" Width="40"  Minimum="4" Maximum="20" x:Name="colLength" LargeChange="1" IsSnapToTickEnabled="True"></Slider>
                 </StackPanel>
-                <Button Width="50" Command="{Binding RefreshMG}" CommandParameter="{MultiBinding Bindings={ Binding ElementName=colWidthCount, Path=colWidth}}" >刷新迷宫</Button>
-                <Button Width="50" Click="FindPath_Click">寻路迷宫</Button>
-                <Button Width="50" Command="{Binding MargeMG}" >合并线段</Button>
-                <Button Width="50" Click="Convert3D_Click">转换3D</Button>
-                <Button>
-                    <Button.Content>旋转</Button.Content>
-                    <Button.Triggers>
-                        <EventTrigger RoutedEvent="Button.Click">
-                            <BeginStoryboard>
-                                <Storyboard RepeatBehavior="Forever">
-                                    <DoubleAnimation Storyboard.TargetName="rotate" Storyboard.TargetProperty="Angle" To="360" Duration="0:0:2.5"/>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-                    </Button.Triggers>
+                <Button Width="50" Command="{Binding RefreshMG}">
+                    <Button.Content>刷新迷宫</Button.Content>
+                    <Button.CommandParameter>
+                        <MultiBinding Converter="{ StaticResource RefreshMGParameter }">
+                            <Binding ElementName="colWidthCount" Path="Value"></Binding>
+                            <Binding ElementName="colHeigthCount" Path="Value"></Binding>
+                            <Binding ElementName="colLength" Path="Value"></Binding>
+                        </MultiBinding>
+                    </Button.CommandParameter>
                 </Button>
-                <Slider Width="100" Minimum="0" Maximum="360" Value="{Binding ElementName=rotate, Path=Angle}"></Slider>
-                <Viewbox ClipToBounds="True" Width="100" Height="100">
+                <Button Width="50" Command="{Binding FindPathMG}">寻路迷宫</Button>
+                <Button Width="50" Command="{Binding MargeMG}" >合并线段</Button>
+                <Button Width="50" Command="{Binding Conver3DMG}">转换3D</Button>
+            </StackPanel>
+        </DockPanel>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <!--二维-->
+            <DockPanel Grid.Column="0">
+                <Label DockPanel.Dock="Top">
+                    <Label.Content>
+                        <MultiBinding Converter="{StaticResource LabelShowToString}">
+                            <Binding Path="lineCount" />
+                            <Binding ElementName="colWidthCount" Path="Value"></Binding>
+                            <Binding ElementName="colHeigthCount" Path="Value"></Binding>
+                            <Binding ElementName="colLength" Path="Value"></Binding>
+                        </MultiBinding>
+                    </Label.Content>
+                </Label>
+                <ItemsControl x:Name="migongcontrol" ItemsSource="{Binding Path=myLines}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas Width="{Binding Path=columnLength}" Height="{Binding Path=rowLength}" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="Canvas.Children">
+                            <Line X1="{Binding Path=startPoint.X}" Y1="{Binding Path=startPoint.Y}" X2="{Binding Path=endPoint.X}" Y2="{Binding Path=endPoint.Y}" Stroke="Black"></Line>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </DockPanel>
+            <DockPanel Grid.Column="1">
+                <Label DockPanel.Dock="Top">
+                    <Label.Content>
+                        <MultiBinding Converter="{ StaticResource LabelShowToString }">
+                            <Binding Path="otherLineCount" />
+                            <Binding ElementName="colWidthCount" Path="Value"></Binding>
+                            <Binding ElementName="colHeigthCount" Path="Value"></Binding>
+                            <Binding  ElementName="colLength" Path="Value"></Binding>
+                        </MultiBinding>
+                    </Label.Content>
+                </Label>
+                <ItemsControl x:Name="migongcontrolother" ItemsSource="{Binding Path=myMargeLines}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas Width="{Binding Path=columnLength}" Height="{Binding Path=rowLength}" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="Canvas.Children">
+                            <Line X1="{Binding Path=startPoint.X}" Y1="{Binding Path=startPoint.Y}" X2="{Binding Path=endPoint.X}" Y2="{Binding Path=endPoint.Y}" Stroke="Black"></Line>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </DockPanel>
+            <DockPanel Grid.Column="2">
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                    <Button Height="20" Width="30" Margin="0 0 20 0" >
+                        <Button.Content>旋转</Button.Content>
+                        <Button.Triggers>
+                            <EventTrigger RoutedEvent="Button.Click">
+                                <BeginStoryboard>
+                                    <Storyboard RepeatBehavior="Forever">
+                                        <DoubleAnimation Storyboard.TargetName="rotate" Storyboard.TargetProperty="Angle" To="360" Duration="0:0:2.5"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Button.Triggers>
+                    </Button>
+                    <Slider Width="100" Minimum="0" Maximum="360" Value="{Binding ElementName=rotate, Path=Angle}" LargeChange="1" IsSnapToTickEnabled="True"></Slider>
+                </StackPanel>
+               
+                <Viewbox DockPanel.Dock="Bottom" ClipToBounds="True" Width="100" Height="100">
                     <!-- The object to animate. -->
                     <Viewport3D Width="100" Height="100">
                         <Viewport3D.Camera>
@@ -130,44 +209,6 @@
                         </ModelVisual3D>
                     </Viewport3D>
                 </Viewbox>
-            </StackPanel>
-        </DockPanel>
-
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <!--二维-->
-            <DockPanel Grid.Column="0">
-                <Label DockPanel.Dock="Top" x:Name="lineCount"></Label>
-                <ItemsControl x:Name="migongcontrol" ItemsSource="{Binding Path=myLines}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <Canvas Width="225" Height="225" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate DataType="Canvas.Children">
-                            <Line X1="{Binding Path=startPoint.X}" Y1="{Binding Path=startPoint.Y}" X2="{Binding Path=endPoint.X}" Y2="{Binding Path=endPoint.Y}" Stroke="Black"></Line>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </DockPanel>
-            <DockPanel Grid.Column="1">
-                <Label DockPanel.Dock="Top" x:Name="otherLineCount"></Label>
-                <ItemsControl x:Name="migongcontrolother">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <Canvas Height="200" Width="200" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate DataType="Canvas.Children">
-                            <Line X1="{Binding Path=startPoint.X}" Y1="{Binding Path=startPoint.Y}" X2="{Binding Path=endPoint.X}" Y2="{Binding Path=endPoint.Y}" Stroke="Black"></Line>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
             </DockPanel>
         </Grid>
     </DockPanel>
