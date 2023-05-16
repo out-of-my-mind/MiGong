@@ -35,19 +35,19 @@ namespace MiGongWpf.CustomShape
         /// <summary>
         /// X轴比例
         /// </summary>
-        public double GetScaleX { get { return Math.Abs(startPoint.X - endPoint.X) / 4 + 1; } }
+        public double GetScaleX { get { return IsHorizontal? Math.Abs(startPoint.X - endPoint.X) : 1; } }
         /// <summary>
         /// Y轴比例
         /// </summary>
-        public double GetScaleY { get { return Math.Abs(startPoint.Y - endPoint.Y) / 4 + 1; } }
+        public double GetScaleY { get { return IsHorizontal? 1 : Math.Abs(startPoint.Y - endPoint.Y); } }
         /// <summary>
         /// X轴移动
         /// </summary>
-        public double GetOffsetX { get { return IsHorizontal ? 0 : Math.Abs(startPoint.X - endPoint.X); } }
+        public double GetOffsetX { get { return Math.Min(startPoint.X, endPoint.X) * 4; } }
         /// <summary>
         /// Y轴移动
         /// </summary>
-        public double GetOffsetY { get { return IsHorizontal ? Math.Abs(startPoint.Y - endPoint.Y) : 0; } }
+        public double GetOffsetY { get { return Math.Min(startPoint.Y, endPoint.Y) * 4; } }
 
 
         public bool MargeLine(MyLine otherLine)

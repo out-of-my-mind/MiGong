@@ -12,6 +12,7 @@
     <Window.Resources>
         <converter:RefreshMGMultiValueConverter x:Key="RefreshMGParameter"/>
         <converter:StringMultiValueConverter x:Key="LabelShowToString"/>
+        <converter:StringConverterDouble x:Key="StringToDouble"/>
     </Window.Resources>
     <!--<Window.DataContext>
         <view:MainWindowView />
@@ -99,39 +100,64 @@
                 </ItemsControl>
             </DockPanel>
             <DockPanel Grid.Column="2">
-                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-                    <Button Height="20" Width="30" Margin="0 0 20 0" >
-                        <Button.Content>旋转</Button.Content>
-                        <Button.Triggers>
-                            <EventTrigger RoutedEvent="Button.Click">
-                                <BeginStoryboard>
-                                    <Storyboard RepeatBehavior="Forever">
-                                        <DoubleAnimation Storyboard.TargetName="rotate" Storyboard.TargetProperty="Angle" To="360" Duration="0:0:2.5"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger>
-                        </Button.Triggers>
-                    </Button>
-                    <Slider Width="100" Minimum="0" Maximum="360" Value="{Binding ElementName=rotate, Path=Angle}" LargeChange="1" IsSnapToTickEnabled="True"></Slider>
-                </StackPanel>
-               
-                <Viewbox DockPanel.Dock="Bottom" ClipToBounds="True" Width="100" Height="100">
-                    <!-- The object to animate. -->
-                    <Viewport3D Width="100" Height="100">
-                        <Viewport3D.Camera>
-                            <PerspectiveCamera x:Name="myPerspectiveCamera"
-                            Position="-10,20,20"
-                            LookDirection="2,-2,-2" 
-                            UpDirection="0,1,0" 
-                            FieldOfView="90" />
-                        </Viewport3D.Camera>
-                        <ModelVisual3D>
-                            <ModelVisual3D.Content>
-                                <DirectionalLight Color="White" Direction="-1,-1,-1"/>
-                            </ModelVisual3D.Content>
-                        </ModelVisual3D>
-                        <ModelVisual3D x:Name="MiGongMap">
-                            <ModelVisual3D.Content>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30px"></RowDefinition>
+                        <RowDefinition Height="30px"></RowDefinition>
+                        <RowDefinition Height="30px"></RowDefinition>
+                        <RowDefinition Height="30px"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" DockPanel.Dock="Top" Orientation="Horizontal">
+                        <Button Height="20" Width="30" Margin="0 0 20 0" >
+                            <Button.Content>旋转</Button.Content>
+                            <Button.Triggers>
+                                <EventTrigger RoutedEvent="Button.Click">
+                                    <BeginStoryboard>
+                                        <Storyboard RepeatBehavior="Forever">
+                                            <DoubleAnimation Storyboard.TargetName="rotate" Storyboard.TargetProperty="Angle" To="360" Duration="0:0:2.5"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Button.Triggers>
+                        </Button>
+                        <Label>角度：</Label>
+                        <Slider Width="50" Minimum="0" Maximum="360" Value="{Binding ElementName=rotate, Path=Angle}" LargeChange="1" IsSnapToTickEnabled="True"></Slider>
+                        <Label>缩放：</Label>
+                        <Slider Width="50" Minimum="0.001" Maximum="1" Value="1" x:Name="scal"></Slider>
+                        <Label Content="{Binding ElementName=scal, Path=Value}"></Label>
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal">
+                        <Label>相机X：</Label>
+                        <Slider Width="120" Minimum="0" Maximum="120" Value="{Binding CameraX}" LargeChange="1" IsSnapToTickEnabled="True"></Slider>
+                    </StackPanel>
+                    <StackPanel Grid.Row="2" Orientation="Horizontal">
+                        <Label>相机Y：</Label>
+                        <Slider Width="120" Minimum="0" Maximum="120" Value="{Binding CameraY}" LargeChange="1" IsSnapToTickEnabled="True"></Slider>
+                    </StackPanel>
+                    <StackPanel Grid.Row="3" Orientation="Horizontal">
+                        <Label>相机Z：</Label>
+                        <Slider Width="120" Minimum="0" Maximum="120" Value="{Binding CameraZ}" LargeChange="1" IsSnapToTickEnabled="True"></Slider>
+                    </StackPanel>
+
+                    <Viewbox Grid.Row="4" DockPanel.Dock="Bottom" ClipToBounds="True">
+                        <!-- The object to animate. -->
+                        <Viewport3D Width="100" Height="100">
+                            <Viewport3D.Camera>
+                                <PerspectiveCamera x:Name="myPerspectiveCamera"
+                                    Position="{Binding CameraPosition}"
+                                    LookDirection="0,-10,-40" 
+                                    UpDirection="0,1,0" 
+                                    FieldOfView="90">
+                                </PerspectiveCamera>
+                            </Viewport3D.Camera>
+                            <ModelVisual3D>
+                                <ModelVisual3D.Content>
+                                    <DirectionalLight Color="White" Direction="-1,-1,-1"/>
+                                </ModelVisual3D.Content>
+                            </ModelVisual3D>
+                            <ModelVisual3D x:Name="MiGongMap">
+                                <!--<ModelVisual3D.Content>
                                 <Model3DGroup>
                                     <GeometryModel3D>
                                         <GeometryModel3D.Geometry>
@@ -161,7 +187,8 @@
                                                         "
                                                         />
                                         </GeometryModel3D.Geometry>
-                                        <!--<GeometryModel3D.Material>
+                                        -->
+                                <!--<GeometryModel3D.Material>
                                             <MaterialGroup>
                                                 <DiffuseMaterial>
                                                     <DiffuseMaterial.Brush>
@@ -170,7 +197,7 @@
                                                 </DiffuseMaterial>
                                             </MaterialGroup>
                                         </GeometryModel3D.Material>-->
-                                        <GeometryModel3D.Material>
+                                <!--<GeometryModel3D.Material>
                                             <MaterialGroup>
                                                 <DiffuseMaterial Brush="Yellow" />
                                                 <SpecularMaterial SpecularPower="24" Brush="LightYellow" />
@@ -179,7 +206,8 @@
                                     </GeometryModel3D>
                                 </Model3DGroup>
                             </ModelVisual3D.Content>
-                            <!--<ModelVisual3D.Content>
+                            -->
+                                <!--<ModelVisual3D.Content>
                                 <GeometryModel3D>
                                     <GeometryModel3D.Geometry>
                                         <MeshGeometry3D 
@@ -195,20 +223,22 @@
                                 </GeometryModel3D>
                             </ModelVisual3D.Content>-->
 
-                            <ModelVisual3D.Transform>
-                                <Transform3DGroup>
-                                    <TranslateTransform3D OffsetX="0" OffsetY="0" OffsetZ="0"/>
-                                    <ScaleTransform3D ScaleX="1" ScaleY="1" ScaleZ="1"/>
-                                    <RotateTransform3D>
-                                        <RotateTransform3D.Rotation>
-                                            <AxisAngleRotation3D x:Name="rotate" Axis="0 1 0"/>
-                                        </RotateTransform3D.Rotation>
-                                    </RotateTransform3D>
-                                </Transform3DGroup>
-                            </ModelVisual3D.Transform>
-                        </ModelVisual3D>
-                    </Viewport3D>
-                </Viewbox>
+                                <ModelVisual3D.Transform>
+                                    <Transform3DGroup>
+                                        <TranslateTransform3D OffsetX="0" OffsetY="0" OffsetZ="0"/>
+                                        <ScaleTransform3D ScaleX="{Binding ElementName=scal, Path=Value}" ScaleY="{Binding ElementName=scal, Path=Value}" ScaleZ="{Binding ElementName=scal, Path=Value}"/>
+                                        <RotateTransform3D>
+                                            <RotateTransform3D.Rotation>
+                                                <AxisAngleRotation3D x:Name="rotate" Axis="0 1 0"/>
+                                            </RotateTransform3D.Rotation>
+                                        </RotateTransform3D>
+                                    </Transform3DGroup>
+                                </ModelVisual3D.Transform>
+                            </ModelVisual3D>
+                        </Viewport3D>
+                    </Viewbox>
+                </Grid>
+              
             </DockPanel>
         </Grid>
     </DockPanel>

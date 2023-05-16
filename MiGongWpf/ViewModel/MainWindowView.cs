@@ -114,6 +114,46 @@ namespace MiGongWpf.ViewModel
             get { return _otherLineCount; }
             set { _otherLineCount = value; ReisePropertyChange("otherLineCount"); }
         }
+
+        private Point3D cameraPosition;
+
+        public Point3D CameraPosition
+        {
+            get { return cameraPosition; }
+            set { cameraPosition = value; ReisePropertyChange("CameraPosition"); }
+        }
+        private Double cameraX;
+
+        public Double CameraX
+        {
+            get { return cameraX; }
+            set { 
+                cameraX = value; 
+                CameraPosition = new Point3D(cameraX, cameraY, cameraZ);
+                ReisePropertyChange("CameraX");
+            }
+        }
+        private Double cameraY;
+
+        public Double CameraY
+        {
+            get { return cameraY; }
+            set { 
+                cameraY = value;
+                CameraPosition = new Point3D(cameraX, cameraY, cameraZ);
+                ReisePropertyChange("CameraY"); }
+        }
+        private Double cameraZ;
+
+        public Double CameraZ
+        {
+            get { return cameraZ; }
+            set { 
+                cameraZ = value;
+                CameraPosition = new Point3D(cameraX, cameraY, cameraZ);
+                ReisePropertyChange("CameraZ"); 
+            }
+        }
         #endregion
 
         private MIGONGMethod mIGONGMethod = null;
@@ -160,53 +200,6 @@ namespace MiGongWpf.ViewModel
         public void FindPath(object paramater)
         {
 
-        }
-        /// <summary>
-        /// 转换成3D
-        /// </summary>
-        /// <param name="patamater"></param>
-        public void Convert3D(object patamater)
-        {
-            Model3DGroup model3DGroup = new Model3DGroup();
-
-            //< GeometryModel3D >
-            //    < GeometryModel3D.Geometry >
-            //        < MeshGeometry3D Positions = "
-            //                    0,0,0  4,0,0  0,4,0  4,4,0
-            //                    0,0,0  0,0,4  0,4,0  0,4,4
-            //                    0,0,0  4,0,0  0,0,4  4,0,4
-            //                    4,0,0  4,4,4  4,0,4  4,4,0
-            //                    0,0,4  4,0,4  0,4,4  4,4,4
-            //                    0,4,0  0,4,4  4,4,0  4,4,4
-            //                    "
-            //                    TriangleIndices = "
-            //                    0,2,1  1,2,3
-            //                    4,5,6  6,5,7
-            //                    8,9,10  9,10,11
-            //                    12,13,14  12,15,13
-            //                    16,17,18  19,18,17
-            //                    20,21,22  22,21,23
-            //                    "
-            //                    TextureCoordinates = "
-            //                    0,0  0,1  1,0  1,1
-            //                    1,1  0,1  1,0  0,0
-            //                    0,0  1,0  0,1  1,1
-            //                    0,0  1,0  0,1  1,1
-            //                    1,1  0,1  1,0  0,0
-            //                    1,1  0,1  1,0  0,0
-            //                    "
-            //                    />
-            //    </ GeometryModel3D.Geometry >
-            //    < GeometryModel3D.Material >
-            //        < MaterialGroup >
-            //            < DiffuseMaterial Brush = "Yellow" />
-            //            < SpecularMaterial SpecularPower = "24" Brush = "LightYellow" />
-            //        </ MaterialGroup >
-            //    </ GeometryModel3D.Material >
-            //</ GeometryModel3D >
-
-
-            //model3DGroup.Children.Add();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

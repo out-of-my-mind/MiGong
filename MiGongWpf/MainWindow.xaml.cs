@@ -7,6 +7,8 @@ using System.Linq;
 using System.Windows.Media.Media3D;
 using MiGongWpf.ViewModel;
 using System.Windows.Media;
+using System.Text;
+using System;
 
 namespace MiGongWpf
 {
@@ -15,21 +17,28 @@ namespace MiGongWpf
     /// </summary>
     public partial class MainWindow : Window
     {
+        ShowInfo showInfo = null;
         //public KeyboardHook windowMessageHook = new KeyboardHook();
         public MainWindow()
         {
             InitializeComponent();
+            Loaded += MainWindow_Loaded;
             Closed += MainWindow_Closed;
             this.DataContext = new MainWindowView();
 
-            //migongcontrol.loa
-            
+           
             //WavefrontObjLoader wavefrontObjLoader = new WavefrontObjLoader();
             //ModelVisual3DWithName modelVisual3DWith = wavefrontObjLoader.LoadObjFile(@"H:\Learn\demo\MiGongWpf\untitled.obj");
             //view3d.Children.Add(modelVisual3DWith);
 
             //windowMessageHook.SetKeyboardHook(Base.HookType.KeyboardLL);
             //windowMessageHook.KeyDownEvent += WindowMessageHook_KeyDownEvent;
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            showInfo = new ShowInfo();
+            showInfo.Show();
         }
 
         //private void WindowMessageHook_KeyDownEvent(object sender, System.Windows.Forms.KeyEventArgs e)
@@ -40,6 +49,7 @@ namespace MiGongWpf
 
         private void MainWindow_Closed(object sender, System.EventArgs e)
         {
+            showInfo.Close();
             //windowMessageHook.UnKeyboardHook();
         }
 
@@ -139,25 +149,29 @@ namespace MiGongWpf
 
             meshGeometry3D.TextureCoordinates = points;
             #endregion
-          
 
 
+            StringBuilder msg = new StringBuilder();
             foreach (var item in mainWindowView.myMargeLines)
             {
                 GeometryModel3D geometryModel3D = new GeometryModel3D();
                 geometryModel3D.Geometry = meshGeometry3D;
                 geometryModel3D.Material = materialGroup;
 
-
                 Transform3DGroup transform3DGroup = new Transform3DGroup();
-                TranslateTransform3D translateTransform3D = new TranslateTransform3D(item.GetOffsetX, item.GetOffsetY, 0);//移动
-                ScaleTransform3D scaleTransform3D = new ScaleTransform3D(item.GetScaleX, item.GetScaleY, 1);//缩放
-                transform3DGroup.Children.Add(translateTransform3D);
+                TranslateTransform3D translateTransform3D = new TranslateTransform3D(item.GetOffsetX, -item.GetOffsetY + mainWindowView.rowLength * 4, 0);//移动
+                ScaleTransform3D scaleTransform3D = new ScaleTransform3D(item.GetScaleX, -item.GetScaleY, 1, 0, 0, 0);//缩放
                 transform3DGroup.Children.Add(scaleTransform3D);
-
+                transform3DGroup.Children.Add(translateTransform3D);
                 geometryModel3D.Transform = transform3DGroup;
+
+                msg.AppendLine(string.Format("startPoint:{0},{1}。endPoint:{2},{3}。XLength:{4},YLength:{5}。X:{6},Y:{7}", 
+                    item.startPoint.X, item.startPoint.Y, item.endPoint.X, item.endPoint.Y, item.GetScaleX, item.GetScaleY, item.GetOffsetX, item.GetOffsetY));
                 model3DGroup.Children.Add(geometryModel3D);
             }
+
+            showInfo.showPanel.Text = msg.ToString();
+
             MiGongMap.Content = model3DGroup;
         }
 
