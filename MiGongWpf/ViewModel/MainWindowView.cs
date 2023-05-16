@@ -19,7 +19,7 @@ namespace MiGongWpf.ViewModel
         public ICommand RefreshMG { set; get; }
         public ICommand MargeMG { set; get; }
         public ICommand FindPathMG { set; get; }
-        public ICommand Conver3DMG { set; get; }
+        //public ICommand Conver3DMG { set; get; }
         #endregion
         public Point basePoint;
 
@@ -127,8 +127,7 @@ namespace MiGongWpf.ViewModel
             this.RefreshMG = new DelegateCommand(new Action<object>(MainDrawing));
             this.MargeMG = new DelegateCommand(new Action<object>(GetMargeResult));
             this.FindPathMG = new DelegateCommand(new Action<object>(FindPath));
-            this.Conver3DMG = new DelegateCommand(new Action<object>(Convert3D));
-            
+            //this.Conver3DMG = new DelegateCommand(new Action<object>(Convert3D));
         }
 
         /// <summary>

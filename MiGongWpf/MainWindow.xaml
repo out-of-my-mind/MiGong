@@ -13,9 +13,9 @@
         <converter:RefreshMGMultiValueConverter x:Key="RefreshMGParameter"/>
         <converter:StringMultiValueConverter x:Key="LabelShowToString"/>
     </Window.Resources>
-    <Window.DataContext>
+    <!--<Window.DataContext>
         <view:MainWindowView />
-    </Window.DataContext>
+    </Window.DataContext>-->
     <DockPanel>
         <DockPanel DockPanel.Dock="Top">
             <StackPanel Orientation="Horizontal">
@@ -39,7 +39,7 @@
                 </Button>
                 <Button Width="50" Command="{Binding FindPathMG}">寻路迷宫</Button>
                 <Button Width="50" Command="{Binding MargeMG}" >合并线段</Button>
-                <Button Width="50" Command="{Binding Conver3DMG}">转换3D</Button>
+                <Button Width="50" Click="Conver3DMG_Click">转换3D</Button>
             </StackPanel>
         </DockPanel>
 
@@ -130,7 +130,7 @@
                                 <DirectionalLight Color="White" Direction="-1,-1,-1"/>
                             </ModelVisual3D.Content>
                         </ModelVisual3D>
-                        <ModelVisual3D>
+                        <ModelVisual3D x:Name="MiGongMap">
                             <ModelVisual3D.Content>
                                 <Model3DGroup>
                                     <GeometryModel3D>

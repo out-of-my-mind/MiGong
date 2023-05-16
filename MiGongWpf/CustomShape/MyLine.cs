@@ -32,9 +32,21 @@ namespace MiGongWpf.CustomShape
         /// </summary>
         public bool IsHorizontal { get { return startPoint.Y == endPoint.Y; } }
 
+        /// <summary>
+        /// X轴比例
+        /// </summary>
         public double GetScaleX { get { return Math.Abs(startPoint.X - endPoint.X) / 4 + 1; } }
+        /// <summary>
+        /// Y轴比例
+        /// </summary>
         public double GetScaleY { get { return Math.Abs(startPoint.Y - endPoint.Y) / 4 + 1; } }
+        /// <summary>
+        /// X轴移动
+        /// </summary>
         public double GetOffsetX { get { return IsHorizontal ? 0 : Math.Abs(startPoint.X - endPoint.X); } }
+        /// <summary>
+        /// Y轴移动
+        /// </summary>
         public double GetOffsetY { get { return IsHorizontal ? Math.Abs(startPoint.Y - endPoint.Y) : 0; } }
 
 
