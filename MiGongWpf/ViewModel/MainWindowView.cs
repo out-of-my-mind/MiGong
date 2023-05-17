@@ -31,12 +31,6 @@ namespace MiGongWpf.ViewModel
             get { return _myLines; }
             set { _myLines = value; ReisePropertyChange("myLines"); }
         }
-        private IEnumerable<MyLine> _myMargeLines;
-        public IEnumerable<MyLine> myMargeLines
-        {
-            get { return _myMargeLines; }
-            set { _myMargeLines = value; ReisePropertyChange("myMargeLines"); }
-        }
 
         private int _rowCont { set; get; }
         private int _columnCount;
@@ -105,18 +99,12 @@ namespace MiGongWpf.ViewModel
             get { return _lineCount; }
             set { _lineCount = value; ReisePropertyChange("lineCount"); }
         }
-        /// <summary>
-        /// 线个数
-        /// </summary>
-        private int _otherLineCount;
-        public int otherLineCount
-        {
-            get { return _otherLineCount; }
-            set { _otherLineCount = value; ReisePropertyChange("otherLineCount"); }
-        }
 
+        #region 相机参数
         private Point3D cameraPosition;
-
+        /// <summary>
+        /// 相机位置
+        /// </summary>
         public Point3D CameraPosition
         {
             get { return cameraPosition; }
@@ -154,6 +142,18 @@ namespace MiGongWpf.ViewModel
                 ReisePropertyChange("CameraZ"); 
             }
         }
+        //"0,-10,-40"
+        private Vector3D cameraLookDirection;
+
+        public Vector3D CameraLookDirection
+        {
+            get { return cameraLookDirection; }
+            set { cameraLookDirection = value; ReisePropertyChange("CameraLookDirection"); }
+        }
+
+
+
+        #endregion
         #endregion
 
         private MIGONGMethod mIGONGMethod = null;
@@ -165,7 +165,6 @@ namespace MiGongWpf.ViewModel
             columnCount = 15;
             colWidth = 15;
             this.RefreshMG = new DelegateCommand(new Action<object>(MainDrawing));
-            this.MargeMG = new DelegateCommand(new Action<object>(GetMargeResult));
             this.FindPathMG = new DelegateCommand(new Action<object>(FindPath));
             //this.Conver3DMG = new DelegateCommand(new Action<object>(Convert3D));
         }
@@ -183,16 +182,19 @@ namespace MiGongWpf.ViewModel
             mIGONGMethod = new MIGONGMethod(parameter.Item1, parameter.Item2, parameter.Item3);
             myLines = mIGONGMethod.MainDrawing(new Point(0, 0));
             lineCount = myLines == null ? 0 : myLines.Count();
+
+            //迷宫线段合并
+            myLines = mIGONGMethod.MargeLine(myLines.ToList());
         }
-        /// <summary>
-        /// 迷宫线段合并
-        /// </summary>
-        /// <param name="paramater"></param>
-        public void GetMargeResult(object paramater)
-        {
-            myMargeLines = mIGONGMethod.MargeLine(myLines.ToList());
-            otherLineCount = myMargeLines == null ? 0 : myMargeLines.Count();
-        }
+        ///// <summary>
+        ///// 迷宫线段合并
+        ///// </summary>
+        ///// <param name="paramater"></param>
+        //public void GetMargeResult(object paramater)
+        //{
+        //    myMargeLines = mIGONGMethod.MargeLine(myLines.ToList());
+        //    otherLineCount = myMargeLines == null ? 0 : myMargeLines.Count();
+        //}
         /// <summary>
         /// 寻路
         /// </summary>

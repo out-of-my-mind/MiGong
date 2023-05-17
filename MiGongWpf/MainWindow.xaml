@@ -39,14 +39,12 @@
                     </Button.CommandParameter>
                 </Button>
                 <Button Width="50" Command="{Binding FindPathMG}">寻路迷宫</Button>
-                <Button Width="50" Command="{Binding MargeMG}" >合并线段</Button>
                 <Button Width="50" Click="Conver3DMG_Click">转换3D</Button>
             </StackPanel>
         </DockPanel>
 
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
@@ -76,30 +74,6 @@
                 </ItemsControl>
             </DockPanel>
             <DockPanel Grid.Column="1">
-                <Label DockPanel.Dock="Top">
-                    <Label.Content>
-                        <MultiBinding Converter="{ StaticResource LabelShowToString }">
-                            <Binding Path="otherLineCount" />
-                            <Binding ElementName="colWidthCount" Path="Value"></Binding>
-                            <Binding ElementName="colHeigthCount" Path="Value"></Binding>
-                            <Binding  ElementName="colLength" Path="Value"></Binding>
-                        </MultiBinding>
-                    </Label.Content>
-                </Label>
-                <ItemsControl x:Name="migongcontrolother" ItemsSource="{Binding Path=myMargeLines}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <Canvas Width="{Binding Path=columnLength}" Height="{Binding Path=rowLength}" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate DataType="Canvas.Children">
-                            <Line X1="{Binding Path=startPoint.X}" Y1="{Binding Path=startPoint.Y}" X2="{Binding Path=endPoint.X}" Y2="{Binding Path=endPoint.Y}" Stroke="Black"></Line>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </DockPanel>
-            <DockPanel Grid.Column="2">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="30px"></RowDefinition>
@@ -142,13 +116,13 @@
 
                     <Viewbox Grid.Row="4" DockPanel.Dock="Bottom" ClipToBounds="True">
                         <!-- The object to animate. -->
-                        <Viewport3D Width="100" Height="100">
+                        <Viewport3D Width="220" Height="140">
                             <Viewport3D.Camera>
                                 <PerspectiveCamera x:Name="myPerspectiveCamera"
                                     Position="{Binding CameraPosition}"
-                                    LookDirection="0,-10,-40" 
+                                    LookDirection="{Binding CameraLookDirection}"
                                     UpDirection="0,1,0" 
-                                    FieldOfView="90">
+                                    FieldOfView="60">
                                 </PerspectiveCamera>
                             </Viewport3D.Camera>
                             <ModelVisual3D>

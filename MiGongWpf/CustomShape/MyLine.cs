@@ -43,11 +43,11 @@ namespace MiGongWpf.CustomShape
         /// <summary>
         /// X轴移动
         /// </summary>
-        public double GetOffsetX { get { return Math.Min(startPoint.X, endPoint.X) * 4; } }
+        public double GetOffsetX { get { return Math.Min(startPoint.X, endPoint.X); } }
         /// <summary>
         /// Y轴移动
         /// </summary>
-        public double GetOffsetY { get { return Math.Min(startPoint.Y, endPoint.Y) * 4; } }
+        public double GetOffsetY { get { return Math.Min(startPoint.Y, endPoint.Y); } }
 
 
         public bool MargeLine(MyLine otherLine)
