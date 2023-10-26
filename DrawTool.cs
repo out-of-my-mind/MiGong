@@ -45,6 +45,7 @@ namespace ClassLibrary1
             }
             return null;
         }
+        
         internal Entity GetEntity(IEnumerable<string> types)
         {
             PromptEntityOptions prOptions = new PromptEntityOptions("选择对象");
