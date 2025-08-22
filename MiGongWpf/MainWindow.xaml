@@ -73,6 +73,7 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </DockPanel>
+            <!--三维-->
             <DockPanel Grid.Column="1">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -83,18 +84,19 @@
                         <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0" DockPanel.Dock="Top" Orientation="Horizontal">
-                        <Button Height="20" Width="30" Margin="0 0 20 0" >
-                            <Button.Content>旋转</Button.Content>
-                            <Button.Triggers>
-                                <EventTrigger RoutedEvent="Button.Click">
-                                    <BeginStoryboard>
-                                        <Storyboard RepeatBehavior="Forever">
-                                            <DoubleAnimation Storyboard.TargetName="rotate" Storyboard.TargetProperty="Angle" To="360" Duration="0:0:2.5"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                            </Button.Triggers>
-                        </Button>
+                        <ToggleButton x:Name="rotateToggle" Height="20" Width="30" Margin="0 0 20 0" >
+                            <ToggleButton.Content>旋转</ToggleButton.Content>
+                            <ToggleButton.Style>
+                                <Style TargetType="ToggleButton">
+                                    <Setter Property="Content" Value="旋转"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter Property="Content" Value="停止"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ToggleButton.Style>
+                        </ToggleButton>
                         <Label>角度：</Label>
                         <Slider Width="50" Minimum="0" Maximum="360" Value="{Binding ElementName=rotate, Path=Angle}" LargeChange="1" IsSnapToTickEnabled="True"></Slider>
                         <Label>缩放：</Label>
@@ -119,11 +121,17 @@
                         <Viewport3D Width="220" Height="140">
                             <Viewport3D.Camera>
                                 <PerspectiveCamera x:Name="myPerspectiveCamera"
-                                    Position="{Binding CameraPosition}"
-                                    LookDirection="{Binding CameraLookDirection}"
+                                    Position="{Binding CameraPosition}" 
+                                    LookDirection="{Binding CameraLookDirection}" 
                                     UpDirection="0,1,0" 
                                     FieldOfView="60">
                                 </PerspectiveCamera>
+                                <!--<PerspectiveCamera x:Name="myPerspectiveCamera"
+                                    Position="6,6,6" 
+                                    LookDirection="-1,-1,-1" 
+                                    UpDirection="0,1,0" 
+                                    FieldOfView="60">
+                                </PerspectiveCamera>-->
                             </Viewport3D.Camera>
                             <ModelVisual3D>
                                 <ModelVisual3D.Content>
@@ -131,71 +139,60 @@
                                 </ModelVisual3D.Content>
                             </ModelVisual3D>
                             <ModelVisual3D x:Name="MiGongMap">
+                                <ModelVisual3D.Content>
+                                    <Model3DGroup>
+                                        <GeometryModel3D>
+                                            <GeometryModel3D.Geometry>
+                                                <MeshGeometry3D 
+                                                    Positions="0,0,0 5,0,0 0,5,0 5,5,0
+                                                               0,0,0 0,0,5 0,5,0 0,5,5
+                                                               0,0,0 5,0,0 0,0,5 5,0,5
+                                                               5,0,0 5,5,5 5,0,5 5,5,0
+                                                               0,0,5 5,0,5 0,5,5 5,5,5
+                                                               0,5,0 0,5,5 5,5,0 5,5,5"
+                                                    TriangleIndices="0,2,1 1,2,3
+                                                                    4,5,6 6,5,7
+                                                                    8,9,10 9,10,11
+                                                                    12,13,14 12,15,13
+                                                                    16,17,18 19,18,17
+                                                                    20,21,22 22,21,23"
+                                                    />
+                                            </GeometryModel3D.Geometry>
+
+                                            <!--<GeometryModel3D.Material>
+                                                <MaterialGroup>
+                                                    <DiffuseMaterial>
+                                                        <DiffuseMaterial.Brush>
+                                                            <ImageBrush ImageSource="C:\\Users\\fcyou\\Pictures\\2022中国航展壁纸\\01.jpg"></ImageBrush>
+                                                        </DiffuseMaterial.Brush>
+                                                    </DiffuseMaterial>
+                                                </MaterialGroup>
+                                            </GeometryModel3D.Material>-->
+                                            <GeometryModel3D.Material>
+                                                <MaterialGroup>
+                                                    <DiffuseMaterial Brush="Yellow" />
+                                                    <SpecularMaterial SpecularPower="24" Brush="LightYellow" />
+                                                </MaterialGroup>
+                                            </GeometryModel3D.Material>
+                                        </GeometryModel3D>
+                                    </Model3DGroup>
+                                </ModelVisual3D.Content>
+                            
                                 <!--<ModelVisual3D.Content>
-                                <Model3DGroup>
                                     <GeometryModel3D>
                                         <GeometryModel3D.Geometry>
-                                            <MeshGeometry3D Positions="
-                                                        0,0,0  4,0,0  0,4,0  4,4,0
-                                                        0,0,0  0,0,4  0,4,0  0,4,4
-                                                        0,0,0  4,0,0  0,0,4  4,0,4
-                                                        4,0,0  4,4,4  4,0,4  4,4,0
-                                                        0,0,4  4,0,4  0,4,4  4,4,4
-                                                        0,4,0  0,4,4  4,4,0  4,4,4
-                                                        "
-                                                        TriangleIndices="
-                                                        0,2,1  1,2,3
-                                                        4,5,6  6,5,7
-                                                        8,9,10  9,10,11
-                                                        12,13,14  12,15,13
-                                                        16,17,18  19,18,17
-                                                        20,21,22  22,21,23
-                                                        "
-                                                        TextureCoordinates="
-                                                        0,0  0,1  1,0  1,1
-                                                        1,1  0,1  1,0  0,0
-                                                        0,0  1,0  0,1  1,1
-                                                        0,0  1,0  0,1  1,1
-                                                        1,1  0,1  1,0  0,0
-                                                        1,1  0,1  1,0  0,0
-                                                        "
-                                                        />
+                                            <MeshGeometry3D 
+                                              Positions="-1,0,0  0,1,0  1,0,0"
+                                              TriangleIndices="0,2,1" /> 
                                         </GeometryModel3D.Geometry>
-                                        -->
-                                <!--<GeometryModel3D.Material>
-                                            <MaterialGroup>
-                                                <DiffuseMaterial>
-                                                    <DiffuseMaterial.Brush>
-                                                        <ImageBrush ImageSource="C:\\Users\\Administrator\\Pictures\\th3.jpg"></ImageBrush>
-                                                    </DiffuseMaterial.Brush>
-                                                </DiffuseMaterial>
-                                            </MaterialGroup>
-                                        </GeometryModel3D.Material>-->
-                                <!--<GeometryModel3D.Material>
-                                            <MaterialGroup>
-                                                <DiffuseMaterial Brush="Yellow" />
-                                                <SpecularMaterial SpecularPower="24" Brush="LightYellow" />
-                                            </MaterialGroup>
+                                        <GeometryModel3D.Material>
+                                            <DiffuseMaterial Brush="Green" />
                                         </GeometryModel3D.Material>
+                                        <GeometryModel3D.BackMaterial>
+                                            <DiffuseMaterial Brush="Yellow" />
+                                        </GeometryModel3D.BackMaterial>
                                     </GeometryModel3D>
-                                </Model3DGroup>
-                            </ModelVisual3D.Content>
-                            -->
-                                <!--<ModelVisual3D.Content>
-                                <GeometryModel3D>
-                                    <GeometryModel3D.Geometry>
-                                        <MeshGeometry3D 
-                                          Positions="-1,0,0  0,1,0  1,0,0"
-                                          TriangleIndices="0,2,1" /> 
-                                    </GeometryModel3D.Geometry>
-                                    <GeometryModel3D.Material>
-                                        <DiffuseMaterial Brush="Green" />
-                                    </GeometryModel3D.Material>
-                                    <GeometryModel3D.BackMaterial>
-                                        <DiffuseMaterial Brush="Yellow" />
-                                    </GeometryModel3D.BackMaterial>
-                                </GeometryModel3D>
-                            </ModelVisual3D.Content>-->
+                                </ModelVisual3D.Content>-->
 
                                 <ModelVisual3D.Transform>
                                     <Transform3DGroup>
@@ -216,5 +213,21 @@
             </DockPanel>
         </Grid>
     </DockPanel>
-    
+    <Window.Triggers>
+        <EventTrigger SourceName="rotateToggle" RoutedEvent="ToggleButton.Checked">
+            <BeginStoryboard x:Name="rotateAnimation">
+                <Storyboard RepeatBehavior="Forever">
+                    <DoubleAnimation Storyboard.TargetName="rotate" 
+                                   Storyboard.TargetProperty="Angle" 
+                                   To="360" 
+                                   Duration="0:0:2.5"
+                                   FillBehavior="HoldEnd"/>
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+
+        <EventTrigger SourceName="rotateToggle" RoutedEvent="ToggleButton.Unchecked">
+            <StopStoryboard BeginStoryboardName="rotateAnimation"/>
+        </EventTrigger>
+    </Window.Triggers>
 </Window>
